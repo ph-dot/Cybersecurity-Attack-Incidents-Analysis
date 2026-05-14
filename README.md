@@ -5,7 +5,7 @@
 This project applies advanced data analytics to a dataset of 100,000 cybersecurity incidents. The goal is to solve real-world problems by transforming raw security logs into actionable insights through rigorous preprocessing, Star Schema modeling, and interactive visualization.
 
 * **Dataset Profile**: 100,000 records tracking attack types, target systems, compromised data, and mitigation outcomes. It contains the following columns: `attack_type`, `target_system`, `outcome`, `timestamp`, `attacker_ip`, `target_ip`, `data_compromised_GB`, `attack_duration_min`, `security_tools_used`, `user_role`, `location`, `attack_severity`, `industry`, and `response_time_min`
-![Alt Text](raw_data.png) 
+![Alt Text](/images/raw_data.png) 
 * **Core Objective**: To minimize impact and harm from cyberattacks by identifying high-risk patterns.
 
 ## 2. Data Preprocessing (CLEAN Framework)
