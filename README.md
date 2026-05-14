@@ -78,23 +78,23 @@ DIVIDE(
 
 ## 3. Data Modeling (Star Schema)
 We implemented a **Star Schema** to optimize query performance and reporting.
-![Alt Text](star_schema.png) 
+![Alt Text](/images/star_schema.png) 
 * **Fact Table**: `cybersecurity_incident_fact` (contains metrics and foreign keys).
-![Alt Text](fact_table.png) 
+![Alt Text](/images/fact_table.png) 
 
 * **Dimension Tables**: `attack_dim`, `target_system_dim`, `security_dim`, `user_role_dim`, `location_dim`, and `industry_dim`.
     - **attack_dim**\
-    ![Alt Text](attack_dim.png)
+    ![Alt Text](/images/attack_dim.png)
     - **target_system_dim**\
-    ![Alt Text](target_system_table.png)
+    ![Alt Text](/images/target_system_table.png)
     - **security_dim**\
-    ![Alt Text](security_table.png)
+    ![Alt Text](/images/security_table.png)
     - **user_role_dim**\
-    ![Alt Text](user_table.png)
+    ![Alt Text](/images/user_table.png)
     - **location_dim**\
-    ![Alt Text](location_table.png)
+    ![Alt Text](/images/location_table.png)
     - **industry_dim**\
-    ![Alt Text](industry_table.png)
+    ![Alt Text](/images/industry_table.png)
 
 **Descriptive Analysis** 
 * This dataset contains 100,000 records of cybersecurity incidents. It is composed of different attacks, target systems, compromised data, attack durations, mitigation methods, etc. These columns will give us an insightful view regarding cybersecurity occurrences. Descriptive analysis is used here to summarize, organize, interpret, and present data. 
@@ -102,19 +102,19 @@ The following are some of the findings this dataset has shown:
 
     - **Success and Failure Rates of Hackings per Year** 
 
-    ![Alt Text](success_failure_rates.png)
+    ![Alt Text](/images/success_failure_rates.png)
 
     This table presents the success and failure rates of hackers per year. This shows that the percentages are very close, but the highest success rate was in 2023, while the lowest was in 2024. In addition, the failure rate means a win for the system because it was not hacked.
 
     - **Total Number of Compromised Data in GB** 
 
-    ![Alt Text](compromised_data.png)
+    ![Alt Text](/images/compromised_data.png)
 
     This horizontal bar chart shows the sum of the compromised number of data in GB per industry. It presents that every industry comprises over 600k GB of data in the span of one year (September 2023 - September 2024).
 
     - **Success Rate of Hacking per Target System**
 
-    ![Alt Text](hacking_sucess.png)
+    ![Alt Text](/images/hacking_sucess.png)
 
     This table shows the following system that the hacker targets. This also indicates the success rate, wherein data are compromised per target system. In this, the database has the highest success rate at 50.71%, while the web server is the lowest at 49.23%.
 
@@ -124,6 +124,9 @@ The following are some of the findings this dataset has shown:
 ## 4. Visualization & Dashboard (DASH Framework)
 The dashboard was developed in **Power BI** following the **DASH Framework**.
 
+### Wireframe
+![Alt Text](/images/wireframe.png)
+
 ### The Pyramid Framework (Metrics & KPIs)
 * **Total Incidents**: 100K.
 * **Success Rate**: 50.03% (Attacker wins).
@@ -131,7 +134,7 @@ The dashboard was developed in **Power BI** following the **DASH Framework**.
 * **Avg Attack Time**: 151.07 Minutes.
 * **Avg Response Time**: 90.45 Minutes.
 * **Critical Incidents**: 30K.
-![Alt Text](kpis.png)
+![Alt Text](/images/kpis.png)
 The following KPIs shows the Total Incidents, Critical Incidents, Average of Attack Duration in Min, Average of Response Time in Min, Success Rate, and Failure Rate of Cybersecurity Incidents. 
 
 ### Filters
@@ -140,23 +143,23 @@ The following KPIs shows the Total Incidents, Critical Incidents, Average of Att
 * **Attack Severity**
 * **Industry**
 * **Location**
-![Alt Text](sliders.png)
+![Alt Text](/images/sliders.png)
 
 ### Charts
 * **Count of User Roles**
-![Alt Text](count_user_roles.png)
+![Alt Text](/images/count_user_roles.png)
 This donut chart displays the count of user roles involved in assessing cybersecurity incidents.
 
 * **Count of User Roles**
-![Alt Text](total_incidents.png)
+![Alt Text](/images/total_incidents.png)
 This line chart shows the total cybersecurity incidents that occurred day by day. This also presents that cybersecurity incidents averagely occur nearly 300 times per day as shown in the chart.
 
 * **Total Incidents by Security Tools used and Mitigation Method**
-![Alt Text](incidents_tools.png)
+![Alt Text](/images/incidents_tools.png)
 This clustered column chart displays the total incidents on what security tools and method of mitigation were used in that incident.
 
 * **Total Incidents by Attack Type and Target System**
-![Alt Text](attack_type_system.png)
+![Alt Text](/images/attack_type_system.png)
 This stacked bar chart displays the total incidents by which attack type occurred and what system was targeted by the attack.
 
 
