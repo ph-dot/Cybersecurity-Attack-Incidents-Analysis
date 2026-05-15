@@ -17,12 +17,31 @@ We utilized the **CLEAN Framework** to ensure a clean enough valid dataset for a
 * **Dimensions**: `attack_type`, `outcome`, `target_system`, `industry`, and `location`.
 
 ### L - Locate Solvable Problems
-| Table | Column | Issue | Row Count | Solvable? | Resolution |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| Cybersecurity | All Columns | Inconsistent Format | 100,000 | Y | Verified via header dropdowns; none found. |
-| Cybersecurity | All Columns | Null/Empty Values | 100,000 | Y | Checked Power Query Quality; 100% valid |
-| Cybersecurity | All Columns | Duplicate Rows | 100,000 | Y | Used 'Keep Duplicates' tool; resulted in 0 values. |
-| Cybersecurity | IP Columns | Identical Source/Target | 100,000 | Y | DAX formula confirmed 0 matches; column deleted. |
+* Create an Issues Log Table
+
+    | Table | Column | Issue | Row Count | Solvable? | Resolution |
+    | :--- | :--- | :--- | :--- | :--- | :--- |
+    | Cybersecurity Sythesized Data | All Columns | Inconsistent Format | 100,000 | Y |  |
+    | Cybersecurity Sythesized Data | All Columns | Null/Empty Values | 100,000 | Y |  |
+    | Cybersecurity Sythesized Data | All Columns | Duplicate Rows | 100,000 | Y |  |
+    | Cybersecurity Sythesized Data | IP Columns | Identical Source/Target | 100,000 | Y |  |
+
+* Inconsistent data formats, nulls, and inconsistent categorizations
+    - checked values in every column’s header menu(dropdown) and did not find any inconsistent data format
+    - check null/empty fields by going to the power query editor window. Under the view ribbon, check every column for quality. The columns showed 0% for error and empty fields, and 100% for valid.
+    ![Alt Text](/images/nulls.png) 
+* Duplicates
+    - checked for duplicate rows by selecting transform data in the home ribbon tab.
+    - selected all columns by using ctrl + a keys
+    - under keep rows, select keep duplicates in order to see if there are any duplicated rows. Our table showed no duplicates.
+    ![Alt Text](/images/duplicates.png) 
+    - remove the query and exit the power query editor window.
+
+
+    - checked if attacker_ip and target_ip columns have the same values in a row to row basis by creating another column and running this formula:
+Comparison = IF('cybersecurity synthesized data'[attacker_ip] = 'cybersecurity synthesized data'[target_ip], "Match", "No Match")
+    - the formula returns match, if the same row data have the same values, and no match if they’re not. it only “shows no match”
+    ![Alt Text](/images/match.png) 
 
 ### E - Evaluate Unsolvable Issues
 * The dataset contained no unsolvable outliers or missing values that required exclusion.
@@ -30,49 +49,33 @@ We utilized the **CLEAN Framework** to ensure a clean enough valid dataset for a
 ### A - Augment the Data
 * **Time Slicing**: Separated `timestamp` into discrete `Date` and `Time` columns for deeper temporal analysis.
 * **New Measures**: Developed the following measures:  
-    - **Critical Incident %** = DIVIDE( [Critical Incidents], [Total Incidents] )
-    - **Critical Incidents** = 
-VAR CurrentSeverity = SELECTEDVALUE('attack_dim'[attack_severity])
-RETURN
-IF(
-    ISBLANK(CurrentSeverity),
-    CALCULATE([Total Incidents], 'attack_dim'[attack_severity] >= 8),
-    IF(CurrentSeverity >= 8, [Total Incidents], 0)
-)
-    - **Failure Rate** = DIVIDE(COUNTROWS(FILTER('cybersecurity_incident_fact', 'cybersecurity_incident_fact'[outcome] = "Failure")), COUNTROWS('cybersecurity_incident_fact'))
-    - **High Data Breach Incidents** = 
-CALCULATE(
-    [Total Incidents],
-    'cybersecurity_incident_fact'[data_compromised_GB] > 50
-)
-    - **High Severity Incident %** = 
-DIVIDE(
-    [High Severity Incidents],
-    [Total Incidents]
-)
-    - **High Severity Incidents** = 
-CALCULATE(
-    [Total Incidents],
-    'attack_dim'[attack_severity] >= 5
-)
-    - **Mitigation Efficiency** = 
-DIVIDE(
-    CALCULATE([Total Incidents], 'cybersecurity_incident_fact'[outcome] = "Failure"), 
-    [Total Incidents]
-)
-    - **Success Rate** = DIVIDE(COUNTROWS(FILTER('cybersecurity_incident_fact', 'cybersecurity_incident_fact'[outcome] = "Success")),COUNTROWS('cybersecurity_incident_fact'))
-    - **System Vulnerability Index** = 
-AVERAGEX(
-    VALUES('target_system_dim'[target_system]),
-    [Failure Rate]
-)
-    - **Total Incidents** = COUNTROWS('cybersecurity_incident_fact')
-    - **Unique Attackers** = DISTINCTCOUNT('cybersecurity_incident_fact'[attacker_ip])
-    - **Zero-Day %** = 
-DIVIDE(
-    CALCULATE([Total Incidents], 'attack_dim'[attack_type] = "Zero-Day Exploit"),
-    [Total Incidents]
-)
+
+| Measure | Formula | Description | Used? |
+| :--- | :--- | :--- | :--- |
+| **Critical Incident %** | DIVIDE([Critical Incidents], [Total Incidents]) | Measures the proportion of total attacks that are classified as "Critical". | No |
+| **Critical Incidents** | VAR CurrentSeverity = SELECTEDVALUE('attack_dim'[attack_severity]) RETURN IF( ISBLANK(CurrentSeverity), CALCULATE([Total Incidents], 'attack_dim'[attack_severity] >= 8),IF(CurrentSeverity >= 8, [Total Incidents], 0)) | Counts high-stakes incidents where the severity score is 8 or higher. | Yes |
+| **Failure Rate** | DIVIDE(COUNTROWS(FILTER('cybersecurity_incident_fact', 'cybersecurity_incident_fact'[outcome] = "Failure")), COUNTROWS('cybersecurity_incident_fact')) | Calculates the percentage of attacks successfully blocked or mitigated by the system. | Yes |
+| **High Data Breach Incidents** | CALCULATE([Total Incidents], 'cybersecurity_incident_fact'[data_compromised_GB] > 50) | Identifies high-impact events resulting in more than 50 GB of compromised data. | No |
+| **High Severity Incident %** | DIVIDE( [High Severity Incidents], [Total Incidents] ) | Analyzes the concentration of mid-to-high severity threats within the total incident pool. | No |
+| **High Severity Incidents** | CALCULATE( [Total Incidents], 'attack_dim'[attack_severity] >= 5 ) | Filters incidents to include all events with a severity score of 5 or higher. | No |
+| **Mitigation Efficiency** | DIVIDE( CALCULATE([Total Incidents], 'cybersecurity_incident_fact'[outcome] = "Failure"), [Total Incidents] ) | A KPI that tracks how effectively security measures result in an "Outcome: Failure" for the attacker. | No |
+| **Success Rate** | DIVIDE(COUNTROWS(FILTER('cybersecurity_incident_fact', 'cybersecurity_incident_fact'[outcome] = "Success")),COUNTROWS('cybersecurity_incident_fact')) | Represents the percentage of incidents where the attacker successfully breached the system. | Yes |
+| **System Vulnerability Index** | AVERAGEX( VALUES('target_system_dim'[target_system]), [Failure Rate] ) | Provides a weighted average of system defense failures to identify which targets are most vulnerable. | No |
+| **Total Incidents** | COUNTROWS('cybersecurity_incident_fact') | The baseline count of all documented security events in the dataset. | Yes |
+| **Unique Attackers** | DISTINCTCOUNT('cybersecurity_incident_fact'[attacker_ip]) | Tracks the number of unique source IP addresses involved in the incidents. | No |
+| **Zero-Day %** | DIVIDE( CALCULATE([Total Incidents], 'attack_dim'[attack_type] = "Zero-Day Exploit"), [Total Incidents] ) | Monitors the frequency of zero-day exploits relative to known attack vectors like phishing or DDoS. | No |
+
+### N - Note and Document
+* **Resolution**: Fill up the resolution column of your Error Log table to properly document what action was taken to resolve the issue.
+
+
+| Table | Column | Issue | Row Count | Solvable? | Resolution |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| Cybersecurity Sythesized Data | All Columns | Inconsistent Format | 100,000 | Y | Verified via header dropdowns; none found. |
+| Cybersecurity Sythesized Data | All Columns | Null/Empty Values | 100,000 | Y | Checked Power Query Quality; 100% valid |
+| Cybersecurity Sythesized Data | All Columns | Duplicate Rows | 100,000 | Y | Used 'Keep Duplicates' tool; resulted in 0 values. |
+| Cybersecurity Sythesized Data | IP Columns | Identical Source/Target | 100,000 | Y | DAX formula confirmed 0 matches; column deleted. |
+
 
 ---
 
@@ -124,8 +127,10 @@ The following are some of the findings this dataset has shown:
 ## 4. Visualization & Dashboard (DASH Framework)
 The dashboard was developed in **Power BI** following the **DASH Framework**.
 
+
 ### Wireframe
 ![Alt Text](/images/wireframe.png)
+
 
 ### The Pyramid Framework (Metrics & KPIs)
 * **Total Incidents**: 100K.
@@ -134,8 +139,11 @@ The dashboard was developed in **Power BI** following the **DASH Framework**.
 * **Avg Attack Time**: 151.07 Minutes.
 * **Avg Response Time**: 90.45 Minutes.
 * **Critical Incidents**: 30K.
+
 ![Alt Text](/images/kpis.png)
+
 The following KPIs shows the Total Incidents, Critical Incidents, Average of Attack Duration in Min, Average of Response Time in Min, Success Rate, and Failure Rate of Cybersecurity Incidents. 
+
 
 ### Filters
 * **Attack Type**
@@ -143,23 +151,32 @@ The following KPIs shows the Total Incidents, Critical Incidents, Average of Att
 * **Attack Severity**
 * **Industry**
 * **Location**
+
 ![Alt Text](/images/sliders.png)
 
 ### Charts
 * **Count of User Roles**
+
 ![Alt Text](/images/count_user_roles.png)
+
 This donut chart displays the count of user roles involved in assessing cybersecurity incidents.
 
-* **Count of User Roles**
+* **Total Incidents by Date**
+
 ![Alt Text](/images/total_incidents.png)
+
 This line chart shows the total cybersecurity incidents that occurred day by day. This also presents that cybersecurity incidents averagely occur nearly 300 times per day as shown in the chart.
 
 * **Total Incidents by Security Tools used and Mitigation Method**
+
 ![Alt Text](/images/incidents_tools.png)
+
 This clustered column chart displays the total incidents on what security tools and method of mitigation were used in that incident.
 
 * **Total Incidents by Attack Type and Target System**
+
 ![Alt Text](/images/attack_type_system.png)
+
 This stacked bar chart displays the total incidents by which attack type occurred and what system was targeted by the attack.
 
 
