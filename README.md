@@ -186,7 +186,7 @@ This stacked bar chart displays the total incidents by which attack type occurre
 
 ### Insights
 
-* **Insight 1**: In the year 2023, there were approximately 32K total incidents, while in 2024, the total incidents doubled, with more or less 64K incident records. Despite this, the success and failure rates are still ~50%.
+* **Insight 1**: In the year 2023, there were approximately 32K total incidents, while in 2024, the total incidents doubled, with more or less 68K incident records. Despite this, the success and failure rates are still ~50%.
 
 * **Insight 2**: Out of all the incidents, the victims are somehow equally distributed at ~25%. However, critical incidents with approximately 8k are among admins and employees. In contrast, approximately 7K critical incidents were recorded among external users and contractors.
 
